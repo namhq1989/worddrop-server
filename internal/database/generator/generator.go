@@ -1,0 +1,115 @@
+package main
+
+import (
+	"os"
+	"slices"
+
+	"github.com/go-jet/jet/v2/generator/metadata"
+	"github.com/go-jet/jet/v2/generator/postgres"
+	"github.com/go-jet/jet/v2/generator/template"
+	postgres2 "github.com/go-jet/jet/v2/postgres"
+	_ "github.com/jackc/pgx/v5/stdlib"
+	_ "github.com/lib/pq"
+	"github.com/namhq1989/worddrop-server/internal/database"
+)
+
+var excludeTables = []string{"schema_version", "spatial_ref_sys"}
+
+func main() {
+	conn, err := parsePostgresConnectionString(os.Getenv("POSTGRES_CONN"))
+	if err != nil {
+		panic(err)
+	}
+
+	if err = postgres.Generate(
+		"internal/database/gen",
+		*conn,
+		template.Default(postgres2.Dialect).
+			UseSchema(func(schema metadata.Schema) template.Schema {
+				return template.DefaultSchema(schema).
+					UseSQLBuilder(template.DefaultSQLBuilder().
+						UseView(func(table metadata.Table) template.TableSQLBuilder {
+							return template.TableSQLBuilder{
+								Skip: true,
+							}
+						}).
+						UseTable(func(table metadata.Table) template.TableSQLBuilder {
+							if slices.Contains(excludeTables, table.Name) {
+								return template.TableSQLBuilder{Skip: true}
+							}
+
+							return template.DefaultTableSQLBuilder(table)
+						}),
+					).
+					UseModel(template.DefaultModel().
+						UseView(func(table metadata.Table) template.ViewModel {
+							return template.ViewModel{
+								Skip: true,
+							}
+						}).
+						UseTable(func(table metadata.Table) template.TableModel {
+							if slices.Contains(excludeTables, table.Name) {
+								return template.TableModel{Skip: true}
+							}
+							return template.DefaultTableModel(table).
+								UseField(func(column metadata.Column) template.TableModelField {
+									field := template.DefaultTableModelField(column)
+
+									if schema.Name == "public" {
+										switch table.Name {
+										case "merchants":
+											field = merchants(field, column)
+										case "campaign_cashback_programs":
+											field = campaignCashbackPrograms(field, column)
+										case "articles":
+											field = articles(field, column)
+										case "xref_merchant_visibility":
+											field = xrefMerchantVisibility(field, column)
+										}
+									}
+
+									return field
+								})
+						}),
+					)
+			}),
+	); err != nil {
+		panic(err)
+	}
+}
+
+func merchants(field template.TableModelField, column metadata.Column) template.TableModelField {
+	switch column.Name {
+	case "store_types":
+		field.Type = template.NewType(database.ArrayString{})
+	}
+
+	return field
+}
+
+func campaignCashbackPrograms(field template.TableModelField, column metadata.Column) template.TableModelField {
+	switch column.Name {
+	case "user_segments":
+		field.Type = template.NewType(database.ArrayString{})
+	}
+
+	return field
+}
+
+func articles(field template.TableModelField, column metadata.Column) template.TableModelField {
+	switch column.Name {
+	case "user_segments":
+		field.Type = template.NewType(database.ArrayString{})
+	}
+
+	return field
+}
+
+func xrefMerchantVisibility(field template.TableModelField, column metadata.Column) template.TableModelField {
+	switch column.Name {
+	case "provinces", "districts", "wards":
+		field.Type = template.NewType(database.ArrayInt{})
+	}
+
+	return field
+}

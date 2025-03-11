@@ -1,0 +1,48 @@
+version: '3'
+
+tasks:
+  # run server
+  run:
+    dotenv: ['.env']
+    cmds:
+      - go run cmd/*.go
+
+  # mandatory tools for code generation
+  install-tools:
+    cmds:
+      - echo "installing tools"
+      - go install google.golang.org/protobuf/cmd/protoc-gen-go
+      - go install google.golang.org/grpc/cmd/protoc-gen-go-grpc
+      - go install github.com/jackc/tern/v2@latest
+      - go install github.com/swaggo/swag/cmd/swag@latest
+      - echo "done"
+
+  # code generation
+  code-gen:
+    cmds:
+      - echo "running code generation"
+      - rm -rf internal/genproto
+      - go generate ./...
+      - echo "done"
+
+  # database generation
+  db-gen:
+    dotenv: ['.env']
+    cmds:
+      - rm -rf internal/database/gen
+      - go run internal/database/generator/*.go
+
+  # mock generation
+  mock-gen:
+    cmds:
+      - rm -rf internal/mock
+
+      # common
+#      - mockgen -source=pkg/common/domain/system_setting.go -destination=internal/mock/common/system_setting.go -package=mockcommon
+
+
+  # test
+  test:
+    dotenv: ['.env.test']
+    cmds:
+      - gotestsum --junitfile-hide-empty-pkg --format testname ./pkg/...
