@@ -29,6 +29,17 @@ type (
 		QueuePassword    string
 		QueueConcurrency int
 
+		// AWS
+		AWSAccessKey string
+		AWSSecretKey string
+		AWSRegion    string
+
+		// R2
+		R2AccessKey string
+		R2SecretKey string
+		R2Bucket    string
+		R2Endpoint  string
+
 		// Open Observe
 		OpenObserveHttpEndpoint string
 		OpenObserveStreamName   string
@@ -66,6 +77,15 @@ func Init() Server {
 		QueuePassword:    getEnvStr("QUEUE_PASSWORD"),
 		QueueConcurrency: getEnvInt("QUEUE_CONCURRENCY"),
 
+		AWSAccessKey: getEnvStr("AWS_ACCESS_KEY"),
+		AWSSecretKey: getEnvStr("AWS_SECRET_KEY"),
+		AWSRegion:    getEnvStr("AWS_REGION"),
+
+		R2AccessKey: getEnvStr("R2_ACCESS_KEY"),
+		R2SecretKey: getEnvStr("R2_SECRET_KEY"),
+		R2Bucket:    getEnvStr("R2_BUCKET"),
+		R2Endpoint:  getEnvStr("R2_ENDPOINT"),
+
 		OpenObserveHttpEndpoint: getEnvStr("OPEN_OBSERVE_HTTP_ENDPOINT"),
 		OpenObserveStreamName:   getEnvStr("OPEN_OBSERVE_STREAM_NAME"),
 		OpenObserveToken:        getEnvStr("OPEN_OBSERVE_TOKEN"),
@@ -101,6 +121,18 @@ func Init() Server {
 
 	if cfg.QueueRedisURL == "" {
 		panic(errors.New("missing QUEUE_REDIS_URL"))
+	}
+
+	if cfg.AWSAccessKey == "" {
+		panic(errors.New("missing AWS_ACCESS_KEY"))
+	}
+
+	if cfg.R2AccessKey == "" {
+		panic(errors.New("missing R2_ACCESS_KEY"))
+	}
+
+	if cfg.NLPEndpoint == "" {
+		panic(errors.New("missing NLP_ENDPOINT"))
 	}
 
 	if cfg.CDNEndpoint == "" {

@@ -8,7 +8,9 @@ import (
 	"github.com/namhq1989/worddrop-server/internal/database"
 	appjwt "github.com/namhq1989/worddrop-server/internal/jwt"
 	"github.com/namhq1989/worddrop-server/internal/monitoring"
+	"github.com/namhq1989/worddrop-server/internal/nlp"
 	"github.com/namhq1989/worddrop-server/internal/queue"
+	"github.com/namhq1989/worddrop-server/internal/tts"
 	"github.com/namhq1989/worddrop-server/internal/utils/waiter"
 	"google.golang.org/grpc"
 )
@@ -19,6 +21,8 @@ type Monolith interface {
 	Caching() *caching.Caching
 	JWT() *appjwt.JWT
 	Queue() *queue.Queue
+	TTS() *tts.TTS
+	NLP() *nlp.NLP
 	Monitoring() *monitoring.Monitoring
 	Rest() *echo.Echo
 	RPC() *grpc.Server

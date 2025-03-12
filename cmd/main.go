@@ -3,8 +3,6 @@ package main
 import (
 	"crypto/subtle"
 	"fmt"
-	"time"
-
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/namhq1989/go-utilities/logger"
@@ -15,9 +13,12 @@ import (
 	appjwt "github.com/namhq1989/worddrop-server/internal/jwt"
 	"github.com/namhq1989/worddrop-server/internal/monitoring"
 	"github.com/namhq1989/worddrop-server/internal/monolith"
+	"github.com/namhq1989/worddrop-server/internal/nlp"
 	"github.com/namhq1989/worddrop-server/internal/queue"
+	"github.com/namhq1989/worddrop-server/internal/tts"
 	"github.com/namhq1989/worddrop-server/internal/utils/staticfiles"
 	"github.com/namhq1989/worddrop-server/internal/utils/waiter"
+	"time"
 )
 
 func main() {
@@ -56,6 +57,21 @@ func main() {
 
 	// caching
 	a.caching = caching.NewCachingClient(cfg.CachingRedisURL)
+
+	// tts
+	a.tts = tts.NewTTSClient(tts.AwsConfig{
+		AccessKey: cfg.AWSAccessKey,
+		SecretKey: cfg.AWSSecretKey,
+		Region:    cfg.AWSRegion,
+	}, tts.R2Config{
+		AccessKey: cfg.R2AccessKey,
+		SecretKey: cfg.R2SecretKey,
+		Endpoint:  cfg.R2Endpoint,
+		Bucket:    cfg.R2Bucket,
+	})
+
+	// nlp
+	a.nlp = nlp.NewNLPClient(cfg.NLPEndpoint)
 
 	// monitoring
 	a.monitoring = monitoring.NewMonitoringClient(

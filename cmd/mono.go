@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/namhq1989/worddrop-server/internal/nlp"
+	"github.com/namhq1989/worddrop-server/internal/tts"
 	"net"
 	"net/http"
 	"time"
@@ -28,6 +30,8 @@ type app struct {
 	caching    *caching.Caching
 	jwt        *appjwt.JWT
 	queue      *queue.Queue
+	tts        *tts.TTS
+	nlp        *nlp.NLP
 	monitoring *monitoring.Monitoring
 	rest       *echo.Echo
 	rpc        *grpc.Server
@@ -57,6 +61,14 @@ func (a *app) Waiter() waiter.Waiter {
 
 func (a *app) Caching() *caching.Caching {
 	return a.caching
+}
+
+func (a *app) TTS() *tts.TTS {
+	return a.tts
+}
+
+func (a *app) NLP() *nlp.NLP {
+	return a.nlp
 }
 
 func (a *app) Monitoring() *monitoring.Monitoring {
