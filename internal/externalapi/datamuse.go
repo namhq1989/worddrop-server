@@ -35,7 +35,7 @@ func (ea ExternalAPI) SearchTermWitDatamuse(ctx *appcontext.AppContext, term str
 	return result, nil
 }
 
-type datamuseApiFindWordResult struct {
+type datamuseApiFindWordResponse struct {
 	Word        string   `json:"word"`
 	Definitions []string `json:"defs"`
 	Tags        []string `json:"tags"`
@@ -69,7 +69,7 @@ func uncapitalizeDefinition(s string) string {
 }
 
 func (ea ExternalAPI) findWordDefinitionsWitDatamuse(ctx *appcontext.AppContext, term string, result *DatamuseFindWordResult) error {
-	var apiResults []datamuseApiFindWordResult
+	var apiResults []datamuseApiFindWordResponse
 
 	_, err := ea.datamuse.R().
 		SetQueryParams(map[string]string{
