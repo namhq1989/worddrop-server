@@ -49,6 +49,9 @@ type (
 		SentryDSN         string
 		SentryMachineName string
 
+		// RapidAPI
+		RapidApiKey string
+
 		// Endpoint
 		NLPEndpoint string
 		CDNEndpoint string
@@ -93,6 +96,8 @@ func Init() Server {
 		SentryDSN:         getEnvStr("SENTRY_DSN"),
 		SentryMachineName: getEnvStr("SENTRY_MACHINE_NAME"),
 
+		RapidApiKey: getEnvStr("RAPID_API_KEY"),
+
 		NLPEndpoint: getEnvStr("NLP_ENDPOINT"),
 		CDNEndpoint: getEnvStr("CDN_ENDPOINT"),
 	}
@@ -129,6 +134,10 @@ func Init() Server {
 
 	if cfg.R2AccessKey == "" {
 		panic(errors.New("missing R2_ACCESS_KEY"))
+	}
+
+	if cfg.RapidApiKey == "" {
+		panic(errors.New("missing RAPID_API_KEY"))
 	}
 
 	if cfg.NLPEndpoint == "" {
