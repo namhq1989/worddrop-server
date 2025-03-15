@@ -59,12 +59,6 @@ func main() {
 										switch table.Name {
 										case "merchants":
 											field = merchants(field, column)
-										case "campaign_cashback_programs":
-											field = campaignCashbackPrograms(field, column)
-										case "articles":
-											field = articles(field, column)
-										case "xref_merchant_visibility":
-											field = xrefMerchantVisibility(field, column)
 										}
 									}
 
@@ -82,33 +76,6 @@ func merchants(field template.TableModelField, column metadata.Column) template.
 	switch column.Name {
 	case "store_types":
 		field.Type = template.NewType(database.ArrayString{})
-	}
-
-	return field
-}
-
-func campaignCashbackPrograms(field template.TableModelField, column metadata.Column) template.TableModelField {
-	switch column.Name {
-	case "user_segments":
-		field.Type = template.NewType(database.ArrayString{})
-	}
-
-	return field
-}
-
-func articles(field template.TableModelField, column metadata.Column) template.TableModelField {
-	switch column.Name {
-	case "user_segments":
-		field.Type = template.NewType(database.ArrayString{})
-	}
-
-	return field
-}
-
-func xrefMerchantVisibility(field template.TableModelField, column metadata.Column) template.TableModelField {
-	switch column.Name {
-	case "provinces", "districts", "wards":
-		field.Type = template.NewType(database.ArrayInt{})
 	}
 
 	return field
