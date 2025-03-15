@@ -5,6 +5,7 @@ import "time"
 type Word struct {
 	ID            string
 	Word          string
+	Level         Level
 	Definitions   []WordDefinition
 	PartsOfSpeech []PartOfSpeech
 	Ipa           string

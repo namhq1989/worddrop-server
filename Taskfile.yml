@@ -3,9 +3,14 @@ version: '3'
 tasks:
   # run server
   run:
-    dotenv: ['.env']
     cmds:
-      - go run cmd/*.go
+      - doppler run -- go run cmd/*.go
+
+  build:
+    cmds:
+      - docker build -f cmd/Dockerfile -t namhq1989/worddrop-server:latest -t namhq1989/worddrop-server:$(git rev-parse --short HEAD) .
+      - docker push namhq1989/worddrop-server:latest
+      - docker push namhq1989/worddrop-server:$(git rev-parse --short HEAD)
 
   # mandatory tools for code generation
   install-tools:
@@ -14,7 +19,6 @@ tasks:
       - go install google.golang.org/protobuf/cmd/protoc-gen-go
       - go install google.golang.org/grpc/cmd/protoc-gen-go-grpc
       - go install github.com/jackc/tern/v2@latest
-      - go install github.com/swaggo/swag/cmd/swag@latest
       - echo "done"
 
   # code generation
@@ -25,12 +29,16 @@ tasks:
       - go generate ./...
       - echo "done"
 
+  # database migration
+  db-migrate:
+    cmds:
+      - doppler run -- sh -c "TERN_CONFIG=internal/database/migration/tern.conf TERN_MIGRATIONS=internal/database/migration tern migrate"
+
   # database generation
   db-gen:
-    dotenv: ['.env']
     cmds:
       - rm -rf internal/database/gen
-      - go run internal/database/generator/*.go
+      - doppler run -- go run internal/database/generator/*.go
 
   # mock generation
   mock-gen:
@@ -43,6 +51,5 @@ tasks:
 
   # test
   test:
-    dotenv: ['.env.test']
     cmds:
       - gotestsum --junitfile-hide-empty-pkg --format testname ./pkg/...
