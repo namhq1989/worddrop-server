@@ -38,5 +38,5 @@ func (c Caching) Del(ctx *appcontext.AppContext, key string) (int64, error) {
 }
 
 func (Caching) GenerateKey(domain, key string) string {
-	return fmt.Sprintf("scapp:caching:%s:%s", domain, key)
+	return fmt.Sprintf("wdapp:caching:%s:%s", domain, key)
 }

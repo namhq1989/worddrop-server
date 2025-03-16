@@ -13,10 +13,8 @@ var Level = &struct {
 	Beginner     postgres.StringExpression
 	Intermediate postgres.StringExpression
 	Advanced     postgres.StringExpression
-	Expert       postgres.StringExpression
 }{
 	Beginner:     postgres.NewEnumValue("beginner"),
 	Intermediate: postgres.NewEnumValue("intermediate"),
 	Advanced:     postgres.NewEnumValue("advanced"),
-	Expert:       postgres.NewEnumValue("expert"),
 }

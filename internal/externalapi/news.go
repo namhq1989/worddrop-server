@@ -2,6 +2,7 @@ package externalapi
 
 import (
 	"fmt"
+	"net/url"
 	"time"
 
 	"github.com/namhq1989/go-utilities/appcontext"
@@ -11,7 +12,7 @@ type NewsArticle struct {
 	Title       string
 	Url         string
 	Description string
-	Image       string
+	ImageURL    string
 	Summary     string
 	PublishedAt time.Time
 }
@@ -87,8 +88,8 @@ func (ea ExternalAPI) parseNewsData(data newsApiResponse) ([]NewsArticle, error)
 				Title:       article.Title,
 				Description: article.Description,
 				Summary:     article.Summary,
-				Image:       article.Image,
-				Url:         article.Url,
+				ImageURL:    article.Image,
+				Url:         cleanURL(article.Url),
 				PublishedAt: publishedAt,
 			}
 
@@ -97,6 +98,16 @@ func (ea ExternalAPI) parseNewsData(data newsApiResponse) ([]NewsArticle, error)
 	}
 
 	return news, nil
+}
+
+func cleanURL(rawURL string) string {
+	parsedURL, err := url.Parse(rawURL)
+	if err != nil {
+		return rawURL
+	}
+
+	parsedURL.RawQuery = ""
+	return parsedURL.String()
 }
 
 func containsNonLatinChars(s string) bool {

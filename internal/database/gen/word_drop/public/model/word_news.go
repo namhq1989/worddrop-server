@@ -8,15 +8,18 @@
 package model
 
 import (
+	"github.com/namhq1989/worddrop-server/internal/database"
 	"time"
 )
 
 type WordNews struct {
-	ID         string `sql:"primary_key"`
-	WordID     string
-	Categories string
-	SourceURL  string
-	Title      string
-	Summary    string
-	CreatedAt  time.Time
+	ID          string `sql:"primary_key"`
+	WordID      string
+	Categories  database.ArrayString
+	SourceURL   string
+	Title       string
+	Summary     string
+	ImageURL    string
+	CreatedAt   time.Time
+	PublishedAt time.Time
 }

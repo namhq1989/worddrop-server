@@ -12,18 +12,16 @@ email_already_existed = "Email already existed"
 invalid_id = "Invalid id"
 invalid_name = "Invalid name"
 invalid_email = "Invalid email"
-invalid_code = "Invalid code"
-invalid_status = "Invalid status"
-invalid_role= "Invalid role"
-invalid_province = "Invalid province"
-invalid_district = "Invalid district"
-invalid_ward = "Invalid ward"
-invalid_position = "Invalid position"
-invalid_identifier = "Invalid identifier"
-invalid_bank = "Invalid bank"
-invalid_bank_account_name = "Invalid bank account name"
-invalid_bank_account_number = "Invalid bank account number"
-invalid_article = "Invalid article"
+invalid_category = "Invalid category"
+invalid_word = "Invalid word"
+invalid_level = "Invalid level"
+invalid_definition = "Invalid definition"
+invalid_part_of_speech = "Invalid part of speech"
+invalid_ipa = "Invalid ipa"
+invalid_example = "Invalid example"
+invalid_news_title = "Invalid news title"
+invalid_news_summary = "Invalid news summary"
+invalid_news_source_url = "Invalid news source url"
 
 # auth
 auth_invalid_auth_token = "Invalid auth token"
@@ -34,31 +32,3 @@ auth_not_allowed = "Not allowed"
 # user
 user_invalid_id = "Invalid user id"
 user_not_found = "User not found"
-user_invalid_source_id = "Invalid source id"
-
-user_invalid_card_issuer = "Invalid card issuer"
-user_invalid_card = "Invalid card"
-user_card_already_existed = "Card already existed"
-user_card_not_found = "Card not found"
-user_invalid_bank_account = "Invalid bank account"
-
-# platform
-platform_invalid_id = "Invalid platform id"
-platform_not_found = "Platform not found"
-
-# merchant
-merchant_invalid_id = "Invalid merchant id"
-merchant_not_found = "Merchant not found"
-merchant_setting_not_found = "Merchant setting not found"
-
-merchant_store_invalid_id = "Invalid store id"
-merchant_store_not_found = "Store not found"
-
-merchant_collection_invalid_id = "Invalid collection id"
-merchant_collection_not_found = "Merchant collection not found"
-
-merchant_transaction_invalid_id = "Invalid transaction id"
-merchant_transaction_not_found = "Transaction not found"
-
-# unique violation
-#unique_violation_platform_accounts_email_key = "Email already existed"

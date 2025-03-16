@@ -12,7 +12,6 @@ type (
 		IsEnvRelease bool
 
 		// Authentication
-		FirebaseServiceAccount      string
 		AnonymousUserChecksumSecret string
 		AccessTokenSecret           string
 		AccessTokenTTL              int // seconds
@@ -66,7 +65,6 @@ func Init() Server {
 		AppName:     getEnvStr("APP_NAME"),
 		Environment: getEnvStr("ENVIRONMENT"),
 
-		FirebaseServiceAccount:      getEnvStr("FIREBASE_SERVICE_ACCOUNT"),
 		AnonymousUserChecksumSecret: getEnvStr("ANONYMOUS_USER_CHECKSUM_SECRET"),
 		AccessTokenSecret:           getEnvStr("ACCESS_TOKEN_SECRET"),
 		AccessTokenTTL:              getEnvInt("ACCESS_TOKEN_TTL"),
@@ -106,10 +104,6 @@ func Init() Server {
 	// validation
 	if cfg.Environment == "" {
 		panic(errors.New("missing ENVIRONMENT"))
-	}
-
-	if cfg.FirebaseServiceAccount == "" {
-		panic(errors.New("missing FIREBASE_SERVICE_ACCOUNT"))
 	}
 
 	if cfg.AccessTokenSecret == "" {

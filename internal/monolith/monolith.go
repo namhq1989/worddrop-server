@@ -6,6 +6,7 @@ import (
 	"github.com/namhq1989/worddrop-server/internal/caching"
 	"github.com/namhq1989/worddrop-server/internal/config"
 	"github.com/namhq1989/worddrop-server/internal/database"
+	"github.com/namhq1989/worddrop-server/internal/externalapi"
 	appjwt "github.com/namhq1989/worddrop-server/internal/jwt"
 	"github.com/namhq1989/worddrop-server/internal/monitoring"
 	"github.com/namhq1989/worddrop-server/internal/nlp"
@@ -23,6 +24,7 @@ type Monolith interface {
 	Queue() *queue.Queue
 	TTS() *tts.TTS
 	NLP() *nlp.NLP
+	ExternalAPI() *externalapi.ExternalAPI
 	Monitoring() *monitoring.Monitoring
 	Rest() *echo.Echo
 	RPC() *grpc.Server

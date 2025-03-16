@@ -15,14 +15,12 @@ const (
 	Level_Beginner     Level = "beginner"
 	Level_Intermediate Level = "intermediate"
 	Level_Advanced     Level = "advanced"
-	Level_Expert       Level = "expert"
 )
 
 var LevelAllValues = []Level{
 	Level_Beginner,
 	Level_Intermediate,
 	Level_Advanced,
-	Level_Expert,
 }
 
 func (e *Level) Scan(value interface{}) error {
@@ -43,8 +41,6 @@ func (e *Level) Scan(value interface{}) error {
 		*e = Level_Intermediate
 	case "advanced":
 		*e = Level_Advanced
-	case "expert":
-		*e = Level_Expert
 	default:
 		return errors.New("jet: Invalid scan value '" + enumValue + "' for Level enum")
 	}

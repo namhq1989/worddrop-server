@@ -8,6 +8,7 @@
 package model
 
 import (
+	"github.com/namhq1989/worddrop-server/internal/database"
 	"time"
 )
 
@@ -15,8 +16,12 @@ type Words struct {
 	ID            string `sql:"primary_key"`
 	Word          string
 	Level         Level
-	PartsOfSpeech string
-	Ipa           *string
-	Audio         *string
+	PartsOfSpeech database.ArrayString
+	Ipa           string
+	Audio         string
+	Definitions   string
+	NounForm      *string
+	VerbForm      *string
 	CreatedAt     time.Time
+	LastFetchedAt time.Time
 }

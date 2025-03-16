@@ -8,7 +8,6 @@ import (
 	"github.com/golang-jwt/jwt"
 	"github.com/namhq1989/go-utilities/appcontext"
 	"github.com/namhq1989/go-utilities/uuid"
-	apperrors "github.com/namhq1989/worddrop-server/internal/error"
 )
 
 var unauthorizedError = errors.New("unauthorized")
@@ -16,7 +15,7 @@ var unauthorizedError = errors.New("unauthorized")
 func (j JWT) GenerateAccessToken(ctx *appcontext.AppContext, userID, platformID string, province int) (string, error) {
 	if !uuid.IsValidID(userID) || !uuid.IsValidID(platformID) {
 		ctx.Logger().Error("invalid user id or platform id", nil, appcontext.Fields{"userID": userID, "platformID": platformID})
-		return "", apperrors.Common.InvalidIdentifier
+		return "", errors.New("invalid_identifier")
 	}
 
 	accessToken, _, err := j.generateAccessToken(userID, platformID, province)

@@ -96,5 +96,12 @@ func (t TTS) uploadToR2(ctx *appcontext.AppContext, fileName string) error {
 		return err
 	}
 
+	// remove local file
+	err = os.Remove(localFilePath)
+	if err != nil {
+		ctx.Logger().Error("[tts] failed to remove local file", err, appcontext.Fields{})
+		return err
+	}
+
 	return nil
 }

@@ -10,8 +10,8 @@ import (
 )
 
 type Operations interface {
-	SummarizeNews(_ *appcontext.AppContext, content string) (*SummarizeNewsResult, error)
-	GenerateWordExamples(_ *appcontext.AppContext, word string) (*GenerateWordExamplesResult, error)
+	ExtractWord(_ *appcontext.AppContext, content string) (result *ExtractWordResult, err error)
+	AnalyzeWord(_ *appcontext.AppContext, word, category string) (*AnalyzeWordResult, error)
 }
 
 type NLP struct {
