@@ -23,7 +23,11 @@ type wordsTable struct {
 	PartsOfSpeech postgres.ColumnString
 	Ipa           postgres.ColumnString
 	Audio         postgres.ColumnString
+	Definitions   postgres.ColumnString
+	NounForm      postgres.ColumnString
+	VerbForm      postgres.ColumnString
 	CreatedAt     postgres.ColumnTimestampz
+	LastFetchedAt postgres.ColumnTimestampz
 
 	AllColumns     postgres.ColumnList
 	MutableColumns postgres.ColumnList
@@ -70,9 +74,13 @@ func newWordsTableImpl(schemaName, tableName, alias string) wordsTable {
 		PartsOfSpeechColumn = postgres.StringColumn("parts_of_speech")
 		IpaColumn           = postgres.StringColumn("ipa")
 		AudioColumn         = postgres.StringColumn("audio")
+		DefinitionsColumn   = postgres.StringColumn("definitions")
+		NounFormColumn      = postgres.StringColumn("noun_form")
+		VerbFormColumn      = postgres.StringColumn("verb_form")
 		CreatedAtColumn     = postgres.TimestampzColumn("created_at")
-		allColumns          = postgres.ColumnList{IDColumn, WordColumn, LevelColumn, PartsOfSpeechColumn, IpaColumn, AudioColumn, CreatedAtColumn}
-		mutableColumns      = postgres.ColumnList{WordColumn, LevelColumn, PartsOfSpeechColumn, IpaColumn, AudioColumn, CreatedAtColumn}
+		LastFetchedAtColumn = postgres.TimestampzColumn("last_fetched_at")
+		allColumns          = postgres.ColumnList{IDColumn, WordColumn, LevelColumn, PartsOfSpeechColumn, IpaColumn, AudioColumn, DefinitionsColumn, NounFormColumn, VerbFormColumn, CreatedAtColumn, LastFetchedAtColumn}
+		mutableColumns      = postgres.ColumnList{WordColumn, LevelColumn, PartsOfSpeechColumn, IpaColumn, AudioColumn, DefinitionsColumn, NounFormColumn, VerbFormColumn, CreatedAtColumn, LastFetchedAtColumn}
 	)
 
 	return wordsTable{
@@ -85,7 +93,11 @@ func newWordsTableImpl(schemaName, tableName, alias string) wordsTable {
 		PartsOfSpeech: PartsOfSpeechColumn,
 		Ipa:           IpaColumn,
 		Audio:         AudioColumn,
+		Definitions:   DefinitionsColumn,
+		NounForm:      NounFormColumn,
+		VerbForm:      VerbFormColumn,
 		CreatedAt:     CreatedAtColumn,
+		LastFetchedAt: LastFetchedAtColumn,
 
 		AllColumns:     allColumns,
 		MutableColumns: mutableColumns,

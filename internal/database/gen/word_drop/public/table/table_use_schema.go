@@ -11,7 +11,6 @@ package table
 // this method only once at the beginning of the program.
 func UseSchema(schema string) {
 	Users = Users.FromSchema(schema)
-	WordDefinitions = WordDefinitions.FromSchema(schema)
 	WordExamples = WordExamples.FromSchema(schema)
 	WordNews = WordNews.FromSchema(schema)
 	Words = Words.FromSchema(schema)

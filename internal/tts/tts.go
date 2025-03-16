@@ -16,8 +16,7 @@ import (
 )
 
 type Operations interface {
-	GenerateWordAudio(ctx *appcontext.AppContext, word string) (string, error)
-	GenerateWordExampleAudio(ctx *appcontext.AppContext, exampleID, exampleContent string) (string, error)
+	GenerateTextAudio(ctx *appcontext.AppContext, id, content string) error
 }
 
 type TTS struct {

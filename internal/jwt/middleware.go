@@ -26,8 +26,6 @@ func (j JWT) RequireLoggedIn(next echo.HandlerFunc) echo.HandlerFunc {
 		}
 
 		ctx.SetUserID(claims.UserID)
-		ctx.SetPlatformID(claims.PlatformID)
-		ctx.SetProvince(claims.Province)
 		ctx.SetTimezone("Asia/Ho_Chi_Minh") // default to VN, should be based on user's timezone
 		return next(c)
 	}

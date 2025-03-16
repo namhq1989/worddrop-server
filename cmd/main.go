@@ -3,6 +3,10 @@ package main
 import (
 	"crypto/subtle"
 	"fmt"
+	"time"
+
+	"github.com/namhq1989/worddrop-server/pkg/content"
+
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/namhq1989/go-utilities/logger"
@@ -10,6 +14,7 @@ import (
 	"github.com/namhq1989/worddrop-server/internal/config"
 	"github.com/namhq1989/worddrop-server/internal/database"
 	apperrors "github.com/namhq1989/worddrop-server/internal/error"
+	"github.com/namhq1989/worddrop-server/internal/externalapi"
 	appjwt "github.com/namhq1989/worddrop-server/internal/jwt"
 	"github.com/namhq1989/worddrop-server/internal/monitoring"
 	"github.com/namhq1989/worddrop-server/internal/monolith"
@@ -18,7 +23,6 @@ import (
 	"github.com/namhq1989/worddrop-server/internal/tts"
 	"github.com/namhq1989/worddrop-server/internal/utils/staticfiles"
 	"github.com/namhq1989/worddrop-server/internal/utils/waiter"
-	"time"
 )
 
 func main() {
@@ -73,6 +77,9 @@ func main() {
 	// nlp
 	a.nlp = nlp.NewNLPClient(cfg.NLPEndpoint)
 
+	// external api
+	a.externalAPI = externalapi.NewExternalAPIClient(cfg.RapidApiKey)
+
 	// monitoring
 	a.monitoring = monitoring.NewMonitoringClient(
 		a.rest,
@@ -105,7 +112,9 @@ func main() {
 	a.waiter = waiter.New(waiter.CatchSignals())
 
 	// modules
-	a.modules = []monolith.Module{}
+	a.modules = []monolith.Module{
+		&content.Module{},
+	}
 
 	// start
 	if err = a.startupModules(); err != nil {

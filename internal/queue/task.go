@@ -9,11 +9,11 @@ import (
 )
 
 const (
-	typenamePrefix = "scapp"
+	typenamePrefix = "wdapp"
 	queueDefault   = "default"
 	queueCronjob   = "cronjob"
 
-	taskTimeout   time.Duration = 30 * time.Second
+	taskTimeout   time.Duration = 10 * time.Minute
 	taskRetention               = 24 * 7 * time.Hour
 )
 

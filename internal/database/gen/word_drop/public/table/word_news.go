@@ -17,13 +17,15 @@ type wordNewsTable struct {
 	postgres.Table
 
 	// Columns
-	ID         postgres.ColumnString
-	WordID     postgres.ColumnString
-	Categories postgres.ColumnString
-	SourceURL  postgres.ColumnString
-	Title      postgres.ColumnString
-	Summary    postgres.ColumnString
-	CreatedAt  postgres.ColumnTimestampz
+	ID          postgres.ColumnString
+	WordID      postgres.ColumnString
+	Categories  postgres.ColumnString
+	SourceURL   postgres.ColumnString
+	Title       postgres.ColumnString
+	Summary     postgres.ColumnString
+	ImageURL    postgres.ColumnString
+	CreatedAt   postgres.ColumnTimestampz
+	PublishedAt postgres.ColumnTimestampz
 
 	AllColumns     postgres.ColumnList
 	MutableColumns postgres.ColumnList
@@ -64,28 +66,32 @@ func newWordNewsTable(schemaName, tableName, alias string) *WordNewsTable {
 
 func newWordNewsTableImpl(schemaName, tableName, alias string) wordNewsTable {
 	var (
-		IDColumn         = postgres.StringColumn("id")
-		WordIDColumn     = postgres.StringColumn("word_id")
-		CategoriesColumn = postgres.StringColumn("categories")
-		SourceURLColumn  = postgres.StringColumn("source_url")
-		TitleColumn      = postgres.StringColumn("title")
-		SummaryColumn    = postgres.StringColumn("summary")
-		CreatedAtColumn  = postgres.TimestampzColumn("created_at")
-		allColumns       = postgres.ColumnList{IDColumn, WordIDColumn, CategoriesColumn, SourceURLColumn, TitleColumn, SummaryColumn, CreatedAtColumn}
-		mutableColumns   = postgres.ColumnList{WordIDColumn, CategoriesColumn, SourceURLColumn, TitleColumn, SummaryColumn, CreatedAtColumn}
+		IDColumn          = postgres.StringColumn("id")
+		WordIDColumn      = postgres.StringColumn("word_id")
+		CategoriesColumn  = postgres.StringColumn("categories")
+		SourceURLColumn   = postgres.StringColumn("source_url")
+		TitleColumn       = postgres.StringColumn("title")
+		SummaryColumn     = postgres.StringColumn("summary")
+		ImageURLColumn    = postgres.StringColumn("image_url")
+		CreatedAtColumn   = postgres.TimestampzColumn("created_at")
+		PublishedAtColumn = postgres.TimestampzColumn("published_at")
+		allColumns        = postgres.ColumnList{IDColumn, WordIDColumn, CategoriesColumn, SourceURLColumn, TitleColumn, SummaryColumn, ImageURLColumn, CreatedAtColumn, PublishedAtColumn}
+		mutableColumns    = postgres.ColumnList{WordIDColumn, CategoriesColumn, SourceURLColumn, TitleColumn, SummaryColumn, ImageURLColumn, CreatedAtColumn, PublishedAtColumn}
 	)
 
 	return wordNewsTable{
 		Table: postgres.NewTable(schemaName, tableName, alias, allColumns...),
 
 		//Columns
-		ID:         IDColumn,
-		WordID:     WordIDColumn,
-		Categories: CategoriesColumn,
-		SourceURL:  SourceURLColumn,
-		Title:      TitleColumn,
-		Summary:    SummaryColumn,
-		CreatedAt:  CreatedAtColumn,
+		ID:          IDColumn,
+		WordID:      WordIDColumn,
+		Categories:  CategoriesColumn,
+		SourceURL:   SourceURLColumn,
+		Title:       TitleColumn,
+		Summary:     SummaryColumn,
+		ImageURL:    ImageURLColumn,
+		CreatedAt:   CreatedAtColumn,
+		PublishedAt: PublishedAtColumn,
 
 		AllColumns:     allColumns,
 		MutableColumns: mutableColumns,

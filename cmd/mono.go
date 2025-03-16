@@ -4,8 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/namhq1989/worddrop-server/internal/nlp"
-	"github.com/namhq1989/worddrop-server/internal/tts"
 	"net"
 	"net/http"
 	"time"
@@ -15,28 +13,32 @@ import (
 	"github.com/namhq1989/worddrop-server/internal/caching"
 	"github.com/namhq1989/worddrop-server/internal/config"
 	"github.com/namhq1989/worddrop-server/internal/database"
+	"github.com/namhq1989/worddrop-server/internal/externalapi"
 	appjwt "github.com/namhq1989/worddrop-server/internal/jwt"
 	"github.com/namhq1989/worddrop-server/internal/monitoring"
 	"github.com/namhq1989/worddrop-server/internal/monolith"
+	"github.com/namhq1989/worddrop-server/internal/nlp"
 	"github.com/namhq1989/worddrop-server/internal/queue"
+	"github.com/namhq1989/worddrop-server/internal/tts"
 	"github.com/namhq1989/worddrop-server/internal/utils/waiter"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
 )
 
 type app struct {
-	cfg        config.Server
-	database   *database.Database
-	caching    *caching.Caching
-	jwt        *appjwt.JWT
-	queue      *queue.Queue
-	tts        *tts.TTS
-	nlp        *nlp.NLP
-	monitoring *monitoring.Monitoring
-	rest       *echo.Echo
-	rpc        *grpc.Server
-	waiter     waiter.Waiter
-	modules    []monolith.Module
+	cfg         config.Server
+	database    *database.Database
+	caching     *caching.Caching
+	jwt         *appjwt.JWT
+	queue       *queue.Queue
+	tts         *tts.TTS
+	nlp         *nlp.NLP
+	externalAPI *externalapi.ExternalAPI
+	monitoring  *monitoring.Monitoring
+	rest        *echo.Echo
+	rpc         *grpc.Server
+	waiter      waiter.Waiter
+	modules     []monolith.Module
 }
 
 func (a *app) Config() config.Server {
@@ -69,6 +71,10 @@ func (a *app) TTS() *tts.TTS {
 
 func (a *app) NLP() *nlp.NLP {
 	return a.nlp
+}
+
+func (a *app) ExternalAPI() *externalapi.ExternalAPI {
+	return a.externalAPI
 }
 
 func (a *app) Monitoring() *monitoring.Monitoring {
