@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"time"
 
+	"github.com/namhq1989/worddrop-server/internal/utils/manipulation"
+
 	"github.com/go-jet/jet/v2/postgres"
 	"github.com/namhq1989/go-utilities/appcontext"
 	"github.com/namhq1989/go-utilities/uuid"
@@ -72,6 +74,40 @@ func (r WordRepository) FindWithFilter(ctx *appcontext.AppContext, filter domain
 		}
 		result = append(result, *word)
 	}
+	return result, nil
+}
+
+func (r WordRepository) FindNewWord(ctx *appcontext.AppContext, categories []string, level string) (*domain.Word, error) {
+	var w = r.getTable()
+	stmt := postgres.SELECT(
+		w.ID, w.Word, w.Level, w.Definitions, w.PartsOfSpeech, w.Ipa, w.Audio,
+		w.NounForm, w.VerbForm,
+	).
+		FROM(w).
+		WHERE(
+			w.Level.EQ(postgres.String(level)).
+				AND(
+					postgres.BoolExp(postgres.Raw("$categories = ANY(words.categories)", postgres.RawArgs{
+						"$categories": categories,
+					})),
+				).
+				AND(
+					w.LastFetchedAt.GT(postgres.TimestampzT(manipulation.NowUTC().Add(time.Hour * -24))),
+				),
+		)
+
+	var doc model.Words
+	if err := stmt.QueryContext(ctx.Context(), r.getDB(), &doc); err != nil {
+		if r.db.IsNoRowsError(err) {
+			return nil, nil
+		}
+		return nil, err
+	}
+
+	var (
+		mapper    = mapping.WordMapper{}
+		result, _ = mapper.FromModelToDomain(doc)
+	)
 	return result, nil
 }
 
