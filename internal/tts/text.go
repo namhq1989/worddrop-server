@@ -7,10 +7,11 @@ import (
 )
 
 func (t TTS) GenerateTextAudio(ctx *appcontext.AppContext, id, content string) error {
-	var (
-		fileName = fmt.Sprintf("%s.%s", id, t.extension)
-		voice    = t.randomVoice()
-	)
+	fileName := fmt.Sprintf("%s.%s", id, t.extension)
 
-	return t.synthesizeAndUploadAudio(ctx, content, fileName, voice)
+	if t.isServiceGoogle() {
+		return t.google.synthesize(ctx, t, content, fileName)
+	} else {
+		return t.polly.synthesize(ctx, t, content, fileName)
+	}
 }

@@ -4,8 +4,9 @@ import "errors"
 
 type (
 	Server struct {
-		RestPort string
-		GRPCPort string
+		RestPort   string
+		GRPCPort   string
+		TTSService string
 
 		AppName      string
 		Environment  string
@@ -33,6 +34,9 @@ type (
 		AWSSecretKey string
 		AWSRegion    string
 
+		// Google
+		GoogleApiKey string
+
 		// R2
 		R2AccessKey string
 		R2SecretKey string
@@ -59,8 +63,9 @@ type (
 
 func Init() Server {
 	cfg := Server{
-		RestPort: ":3000",
-		GRPCPort: ":3001",
+		RestPort:   ":3000",
+		GRPCPort:   ":3001",
+		TTSService: "google",
 
 		AppName:     getEnvStr("APP_NAME"),
 		Environment: getEnvStr("ENVIRONMENT"),
@@ -81,6 +86,8 @@ func Init() Server {
 		AWSAccessKey: getEnvStr("AWS_ACCESS_KEY"),
 		AWSSecretKey: getEnvStr("AWS_SECRET_KEY"),
 		AWSRegion:    getEnvStr("AWS_REGION"),
+
+		GoogleApiKey: getEnvStr("GOOGLE_API_KEY"),
 
 		R2AccessKey: getEnvStr("R2_ACCESS_KEY"),
 		R2SecretKey: getEnvStr("R2_SECRET_KEY"),
@@ -124,6 +131,10 @@ func Init() Server {
 
 	if cfg.AWSAccessKey == "" {
 		panic(errors.New("missing AWS_ACCESS_KEY"))
+	}
+
+	if cfg.GoogleApiKey == "" {
+		panic(errors.New("missing GOOGLE_API_KEY"))
 	}
 
 	if cfg.R2AccessKey == "" {
