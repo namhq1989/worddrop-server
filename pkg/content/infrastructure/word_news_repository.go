@@ -43,7 +43,7 @@ func (r WordNewsRepository) FindByWordID(ctx *appcontext.AppContext, wordID stri
 	)
 
 	stmt := postgres.SELECT(
-		wn.ID, wn.Title, wn.Summary, wn.ImageURL, wn.SourceURL, wn.CreatedAt, wn.PublishedAt,
+		wn.ID, wn.Title, wn.Summary, wn.ImageURL, wn.SourceURL, wn.Categories, wn.PublishedAt,
 	).
 		FROM(wn).
 		WHERE(wn.WordID.EQ(postgres.String(wordID)))

@@ -2,9 +2,9 @@ package infrastructure
 
 import (
 	"database/sql"
+	"fmt"
+	"strings"
 	"time"
-
-	"github.com/namhq1989/worddrop-server/internal/utils/manipulation"
 
 	"github.com/go-jet/jet/v2/postgres"
 	"github.com/namhq1989/go-utilities/appcontext"
@@ -77,24 +77,34 @@ func (r WordRepository) FindWithFilter(ctx *appcontext.AppContext, filter domain
 	return result, nil
 }
 
-func (r WordRepository) FindNewWord(ctx *appcontext.AppContext, categories []string, level string) (*domain.Word, error) {
-	var w = r.getTable()
+func (r WordRepository) FindNewWord(ctx *appcontext.AppContext, categories []string, level string, ts time.Time) (*domain.Word, error) {
+	var (
+		w  = r.getTable().AS("words")
+		wn = table.WordNews.AS("wn")
+	)
+
+	whereStmt := wn.PublishedAt.GT_EQ(postgres.TimestampzT(ts))
+	if level != "" {
+		whereStmt = whereStmt.AND(w.Level.EQ(postgres.String(level)))
+	}
+	if len(categories) > 0 {
+		arrayElements := make([]string, len(categories))
+		for i, category := range categories {
+			escapedCategory := strings.ReplaceAll(category, "'", "''")
+			arrayElements[i] = fmt.Sprintf("'%s'", escapedCategory)
+		}
+
+		arrayString := fmt.Sprintf("ARRAY[%s]", strings.Join(arrayElements, ", "))
+		categoriesCondition := postgres.BoolExp(postgres.Raw(fmt.Sprintf("wn.categories && %s", arrayString)))
+		whereStmt = whereStmt.AND(categoriesCondition)
+	}
+
 	stmt := postgres.SELECT(
 		w.ID, w.Word, w.Level, w.Definitions, w.PartsOfSpeech, w.Ipa, w.Audio,
 		w.NounForm, w.VerbForm,
 	).
-		FROM(w).
-		WHERE(
-			w.Level.EQ(postgres.String(level)).
-				AND(
-					postgres.BoolExp(postgres.Raw("$categories = ANY(words.categories)", postgres.RawArgs{
-						"$categories": categories,
-					})),
-				).
-				AND(
-					w.LastFetchedAt.GT(postgres.TimestampzT(manipulation.NowUTC().Add(time.Hour * -24))),
-				),
-		)
+		FROM(w.LEFT_JOIN(wn, wn.WordID.EQ(w.ID))).
+		WHERE(whereStmt)
 
 	var doc model.Words
 	if err := stmt.QueryContext(ctx.Context(), r.getDB(), &doc); err != nil {

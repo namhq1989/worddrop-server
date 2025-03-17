@@ -1,8 +1,8 @@
 package dto
 
 type GetNewWordRequest struct {
-	Categories []string `json:"categories"`
-	Level      string   `json:"level"`
+	Categories string `query:"categories"`
+	Level      string `query:"level"`
 }
 
 type GetNewWordResponse struct {
