@@ -9,8 +9,13 @@ import (
 	"github.com/namhq1989/worddrop-server/internal/utils/manipulation"
 )
 
+const (
+	NewWordTimeThreshold = 24 * 3 * time.Hour
+)
+
 type WordRepository interface {
 	FindWithFilter(ctx *appcontext.AppContext, filter WordFilter) ([]Word, error)
+	FindNewWord(ctx *appcontext.AppContext, categories []string, level string, ts time.Time) (*Word, error)
 	FindByWord(ctx *appcontext.AppContext, word string) (*Word, error)
 	FindByID(ctx *appcontext.AppContext, wordID string) (*Word, error)
 	FindSimilar(ctx *appcontext.AppContext, pos, level string, ts time.Time, limit int64) ([]Word, error)

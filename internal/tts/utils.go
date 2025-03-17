@@ -35,7 +35,6 @@ func (t TTS) generateFilePath(fileName string) string {
 }
 
 func (t TTS) synthesizeAndUploadAudio(ctx *appcontext.AppContext, text string, fileName string, voice types.Voice) error {
-	// Generate speech with Polly
 	output, err := t.polly.SynthesizeSpeech(ctx.Context(), &polly.SynthesizeSpeechInput{
 		OutputFormat: types.OutputFormatMp3,
 		Text:         aws.String(text),
@@ -50,7 +49,6 @@ func (t TTS) synthesizeAndUploadAudio(ctx *appcontext.AppContext, text string, f
 	}
 	defer func() { _ = output.AudioStream.Close() }()
 
-	// Create local file
 	file, err := os.Create(t.generateFilePath(fileName))
 	if err != nil {
 		ctx.Logger().Error("[tts] failed to create file from Polly response", err, appcontext.Fields{})
@@ -58,7 +56,6 @@ func (t TTS) synthesizeAndUploadAudio(ctx *appcontext.AppContext, text string, f
 	}
 	defer func() { _ = file.Close() }()
 
-	// Write to local file
 	_, err = io.Copy(file, output.AudioStream)
 	if err != nil {
 		ctx.Logger().Error("[tts] failed to write file from Polly response", err, appcontext.Fields{})
@@ -66,8 +63,7 @@ func (t TTS) synthesizeAndUploadAudio(ctx *appcontext.AppContext, text string, f
 	}
 
 	// Upload to R2
-	err = t.uploadToR2(ctx, fileName)
-	if err != nil {
+	if err = t.uploadToR2(ctx, fileName); err != nil {
 		ctx.Logger().Error("[tts] failed to upload file to R2", err, appcontext.Fields{})
 		return err
 	}
@@ -96,9 +92,7 @@ func (t TTS) uploadToR2(ctx *appcontext.AppContext, fileName string) error {
 		return err
 	}
 
-	// remove local file
-	err = os.Remove(localFilePath)
-	if err != nil {
+	if err = os.Remove(localFilePath); err != nil {
 		ctx.Logger().Error("[tts] failed to remove local file", err, appcontext.Fields{})
 		return err
 	}
