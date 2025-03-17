@@ -63,16 +63,20 @@ func main() {
 	a.caching = caching.NewCachingClient(cfg.CachingRedisURL)
 
 	// tts
-	a.tts = tts.NewTTSClient(tts.AwsConfig{
+	a.tts = tts.NewTTSClient(tts.ServiceGoogle, tts.AwsConfig{
 		AccessKey: cfg.AWSAccessKey,
 		SecretKey: cfg.AWSSecretKey,
 		Region:    cfg.AWSRegion,
-	}, tts.R2Config{
-		AccessKey: cfg.R2AccessKey,
-		SecretKey: cfg.R2SecretKey,
-		Endpoint:  cfg.R2Endpoint,
-		Bucket:    cfg.R2Bucket,
-	})
+	}, tts.GoogleConfig{
+		ApiKey: cfg.GoogleApiKey,
+	},
+		tts.R2Config{
+			AccessKey: cfg.R2AccessKey,
+			SecretKey: cfg.R2SecretKey,
+			Endpoint:  cfg.R2Endpoint,
+			Bucket:    cfg.R2Bucket,
+		},
+	)
 
 	// nlp
 	a.nlp = nlp.NewNLPClient(cfg.NLPEndpoint)

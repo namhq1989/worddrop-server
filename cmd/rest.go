@@ -120,6 +120,7 @@ func addCorsMiddleware(e *echo.Echo, cfg config.Server) {
 		allowedOrigins = []string{
 			"http://localhost:5173",
 			"chrome-extension://agkodnlnifckgfmbcjhhilanoamjkhhp",
+			"chrome-extension://jdihpcjempflfokkceefmjpebbgfalbp",
 		}
 	}
 

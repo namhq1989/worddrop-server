@@ -2,21 +2,20 @@ package tts
 
 import (
 	"fmt"
-	"io"
 	"os"
 	"path"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/service/polly"
-	"github.com/aws/aws-sdk-go-v2/service/polly/types"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/namhq1989/go-utilities/appcontext"
-	"github.com/namhq1989/worddrop-server/internal/utils/manipulation"
 )
 
-func (t TTS) randomVoice() types.Voice {
-	rand := manipulation.RandomIntInRange(0, len(t.voices)-1)
-	return t.voices[rand]
+func (t TTS) isServicePolly() bool {
+	return t.service == ServicePolly
+}
+
+func (t TTS) isServiceGoogle() bool {
+	return t.service == ServiceGoogle
 }
 
 func (t TTS) initDirectories() {
@@ -32,43 +31,6 @@ func (TTS) getFilePath() string {
 
 func (t TTS) generateFilePath(fileName string) string {
 	return fmt.Sprintf("%s/%s", t.getFilePath(), fileName)
-}
-
-func (t TTS) synthesizeAndUploadAudio(ctx *appcontext.AppContext, text string, fileName string, voice types.Voice) error {
-	output, err := t.polly.SynthesizeSpeech(ctx.Context(), &polly.SynthesizeSpeechInput{
-		OutputFormat: types.OutputFormatMp3,
-		Text:         aws.String(text),
-		VoiceId:      voice.Id,
-		Engine:       types.EngineNeural,
-		LanguageCode: types.LanguageCodeEnUs,
-		TextType:     types.TextTypeText,
-	})
-	if err != nil {
-		ctx.Logger().Error("[tts] failed to synthesize speech from Polly", err, appcontext.Fields{})
-		return err
-	}
-	defer func() { _ = output.AudioStream.Close() }()
-
-	file, err := os.Create(t.generateFilePath(fileName))
-	if err != nil {
-		ctx.Logger().Error("[tts] failed to create file from Polly response", err, appcontext.Fields{})
-		return err
-	}
-	defer func() { _ = file.Close() }()
-
-	_, err = io.Copy(file, output.AudioStream)
-	if err != nil {
-		ctx.Logger().Error("[tts] failed to write file from Polly response", err, appcontext.Fields{})
-		return err
-	}
-
-	// Upload to R2
-	if err = t.uploadToR2(ctx, fileName); err != nil {
-		ctx.Logger().Error("[tts] failed to upload file to R2", err, appcontext.Fields{})
-		return err
-	}
-
-	return nil
 }
 
 func (t TTS) uploadToR2(ctx *appcontext.AppContext, fileName string) error {
