@@ -20,7 +20,6 @@ type wordExamplesTable struct {
 	ID        postgres.ColumnString
 	WordID    postgres.ColumnString
 	Example   postgres.ColumnString
-	Audio     postgres.ColumnString
 	MainWord  postgres.ColumnString
 	Level     postgres.ColumnString
 	CreatedAt postgres.ColumnTimestampz
@@ -67,12 +66,11 @@ func newWordExamplesTableImpl(schemaName, tableName, alias string) wordExamplesT
 		IDColumn        = postgres.StringColumn("id")
 		WordIDColumn    = postgres.StringColumn("word_id")
 		ExampleColumn   = postgres.StringColumn("example")
-		AudioColumn     = postgres.StringColumn("audio")
 		MainWordColumn  = postgres.StringColumn("main_word")
 		LevelColumn     = postgres.StringColumn("level")
 		CreatedAtColumn = postgres.TimestampzColumn("created_at")
-		allColumns      = postgres.ColumnList{IDColumn, WordIDColumn, ExampleColumn, AudioColumn, MainWordColumn, LevelColumn, CreatedAtColumn}
-		mutableColumns  = postgres.ColumnList{WordIDColumn, ExampleColumn, AudioColumn, MainWordColumn, LevelColumn, CreatedAtColumn}
+		allColumns      = postgres.ColumnList{IDColumn, WordIDColumn, ExampleColumn, MainWordColumn, LevelColumn, CreatedAtColumn}
+		mutableColumns  = postgres.ColumnList{WordIDColumn, ExampleColumn, MainWordColumn, LevelColumn, CreatedAtColumn}
 	)
 
 	return wordExamplesTable{
@@ -82,7 +80,6 @@ func newWordExamplesTableImpl(schemaName, tableName, alias string) wordExamplesT
 		ID:        IDColumn,
 		WordID:    WordIDColumn,
 		Example:   ExampleColumn,
-		Audio:     AudioColumn,
 		MainWord:  MainWordColumn,
 		Level:     LevelColumn,
 		CreatedAt: CreatedAtColumn,

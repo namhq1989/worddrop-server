@@ -12,7 +12,7 @@ func (WordMapper) FromModelToDomain(word model.Words) (*domain.Word, error) {
 	var result = &domain.Word{
 		ID:            word.ID,
 		Word:          word.Word,
-		Level:         domain.ToLevel(word.Level.String()),
+		Level:         domain.ToLevel(word.Level),
 		Definitions:   make([]domain.WordDefinition, 0),
 		PartsOfSpeech: word.PartsOfSpeech,
 		Ipa:           word.Ipa,
@@ -46,7 +46,7 @@ func (WordMapper) FromDomainToModel(word domain.Word) (*model.Words, error) {
 	var result = &model.Words{
 		ID:            word.ID,
 		Word:          word.Word,
-		Level:         model.Level(word.Level.String()),
+		Level:         word.Level.String(),
 		Definitions:   "",
 		PartsOfSpeech: word.PartsOfSpeech,
 		Ipa:           word.Ipa,

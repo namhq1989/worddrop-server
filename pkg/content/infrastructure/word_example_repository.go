@@ -43,7 +43,7 @@ func (r WordExampleRepository) FindByWordID(ctx *appcontext.AppContext, wordID s
 	)
 
 	stmt := postgres.SELECT(
-		we.ID, we.Level, we.Example, we.Audio, we.MainWord,
+		we.ID, we.Level, we.Example, we.MainWord,
 	).
 		FROM(we).
 		WHERE(we.WordID.EQ(postgres.String(wordID)))

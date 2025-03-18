@@ -2,7 +2,7 @@
 CREATE TABLE words (
                        id VARCHAR(50) PRIMARY KEY,
                        word VARCHAR(50) NOT NULL,
-                       level level NOT NULL,
+                       level varchar(20) NOT NULL,
                        parts_of_speech TEXT[] NOT NULL,
                        ipa VARCHAR(50) NOT NULL,
                        definitions JSONB NOT NULL, -- JSON Format: {"pos": "string", "definition": "string"}
@@ -27,7 +27,7 @@ CREATE TABLE word_examples (
                                word_id VARCHAR(50) NOT NULL REFERENCES words(id) ON DELETE CASCADE,
                                example TEXT NOT NULL,
                                main_word VARCHAR(50) NOT NULL,
-                               level level NOT NULL,
+                               level varchar(20) NOT NULL,
                                created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );
 

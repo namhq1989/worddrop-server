@@ -15,8 +15,7 @@ type WordExamples struct {
 	ID        string `sql:"primary_key"`
 	WordID    string
 	Example   string
-	Audio     string
 	MainWord  string
-	Level     Level
+	Level     string
 	CreatedAt time.Time
 }

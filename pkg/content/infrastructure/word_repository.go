@@ -45,7 +45,7 @@ func (r WordRepository) FindWithFilter(ctx *appcontext.AppContext, filter domain
 	whereStmt := w.LastFetchedAt.LT(postgres.TimestampzT(filter.Timestamp))
 
 	stmt := postgres.SELECT(
-		w.ID, w.Word, w.Level, w.Definitions, w.PartsOfSpeech, w.Ipa, w.Audio,
+		w.ID, w.Word, w.Level, w.Definitions, w.PartsOfSpeech, w.Ipa,
 		w.NounForm, w.VerbForm,
 	).
 		FROM(w).
@@ -100,7 +100,7 @@ func (r WordRepository) FindNewWord(ctx *appcontext.AppContext, categories []str
 	}
 
 	stmt := postgres.SELECT(
-		w.ID, w.Word, w.Level, w.Definitions, w.PartsOfSpeech, w.Ipa, w.Audio,
+		w.ID, w.Word, w.Level, w.Definitions, w.PartsOfSpeech, w.Ipa,
 		w.NounForm, w.VerbForm,
 	).
 		FROM(w.LEFT_JOIN(wn, wn.WordID.EQ(w.ID))).
@@ -124,8 +124,8 @@ func (r WordRepository) FindNewWord(ctx *appcontext.AppContext, categories []str
 func (r WordRepository) FindByWord(ctx *appcontext.AppContext, word string) (*domain.Word, error) {
 	var w = r.getTable()
 	stmt := postgres.SELECT(
-		w.ID, w.Word, w.Level, w.Definitions, w.PartsOfSpeech, w.Ipa, w.Audio,
-		w.NounForm, w.VerbForm,
+		w.ID, w.Word, w.Level, w.Definitions, w.PartsOfSpeech, w.Ipa,
+		w.NounForm, w.VerbForm, w.LastFetchedAt,
 	).
 		FROM(w).
 		WHERE(w.Word.EQ(postgres.String(word)))
@@ -152,7 +152,7 @@ func (r WordRepository) FindByID(ctx *appcontext.AppContext, wordID string) (*do
 
 	var w = r.getTable()
 	stmt := postgres.SELECT(
-		w.ID, w.Word, w.Level, w.Definitions, w.PartsOfSpeech, w.Ipa, w.Audio,
+		w.ID, w.Word, w.Level, w.Definitions, w.PartsOfSpeech, w.Ipa,
 		w.NounForm, w.VerbForm,
 	).
 		FROM(w).
@@ -186,7 +186,7 @@ func (r WordRepository) FindSimilar(ctx *appcontext.AppContext, pos, level strin
 		AND(w.LastFetchedAt.GT_EQ(postgres.TimestampzT(ts)))
 
 	stmt := postgres.SELECT(
-		w.ID, w.Word, w.Level, w.Definitions, w.PartsOfSpeech, w.Ipa, w.Audio,
+		w.ID, w.Word, w.Level, w.Definitions, w.PartsOfSpeech, w.Ipa,
 		w.NounForm, w.VerbForm,
 	).
 		FROM(w).
