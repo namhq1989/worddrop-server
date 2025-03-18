@@ -26,7 +26,7 @@ func (WordExampleMapper) FromDomainToModel(example domain.WordExample) (*model.W
 		WordID:    example.WordID,
 		Example:   example.Example,
 		MainWord:  example.MainWord,
-		Level:     model.Level(example.Level.String()),
+		Level:     example.Level.String(),
 		CreatedAt: example.CreatedAt,
 	}
 

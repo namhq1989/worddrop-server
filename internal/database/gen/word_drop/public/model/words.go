@@ -15,10 +15,9 @@ import (
 type Words struct {
 	ID            string `sql:"primary_key"`
 	Word          string
-	Level         Level
+	Level         string
 	PartsOfSpeech database.ArrayString
 	Ipa           string
-	Audio         string
 	Definitions   string
 	NounForm      *string
 	VerbForm      *string

@@ -22,7 +22,6 @@ type wordsTable struct {
 	Level         postgres.ColumnString
 	PartsOfSpeech postgres.ColumnString
 	Ipa           postgres.ColumnString
-	Audio         postgres.ColumnString
 	Definitions   postgres.ColumnString
 	NounForm      postgres.ColumnString
 	VerbForm      postgres.ColumnString
@@ -73,14 +72,13 @@ func newWordsTableImpl(schemaName, tableName, alias string) wordsTable {
 		LevelColumn         = postgres.StringColumn("level")
 		PartsOfSpeechColumn = postgres.StringColumn("parts_of_speech")
 		IpaColumn           = postgres.StringColumn("ipa")
-		AudioColumn         = postgres.StringColumn("audio")
 		DefinitionsColumn   = postgres.StringColumn("definitions")
 		NounFormColumn      = postgres.StringColumn("noun_form")
 		VerbFormColumn      = postgres.StringColumn("verb_form")
 		CreatedAtColumn     = postgres.TimestampzColumn("created_at")
 		LastFetchedAtColumn = postgres.TimestampzColumn("last_fetched_at")
-		allColumns          = postgres.ColumnList{IDColumn, WordColumn, LevelColumn, PartsOfSpeechColumn, IpaColumn, AudioColumn, DefinitionsColumn, NounFormColumn, VerbFormColumn, CreatedAtColumn, LastFetchedAtColumn}
-		mutableColumns      = postgres.ColumnList{WordColumn, LevelColumn, PartsOfSpeechColumn, IpaColumn, AudioColumn, DefinitionsColumn, NounFormColumn, VerbFormColumn, CreatedAtColumn, LastFetchedAtColumn}
+		allColumns          = postgres.ColumnList{IDColumn, WordColumn, LevelColumn, PartsOfSpeechColumn, IpaColumn, DefinitionsColumn, NounFormColumn, VerbFormColumn, CreatedAtColumn, LastFetchedAtColumn}
+		mutableColumns      = postgres.ColumnList{WordColumn, LevelColumn, PartsOfSpeechColumn, IpaColumn, DefinitionsColumn, NounFormColumn, VerbFormColumn, CreatedAtColumn, LastFetchedAtColumn}
 	)
 
 	return wordsTable{
@@ -92,7 +90,6 @@ func newWordsTableImpl(schemaName, tableName, alias string) wordsTable {
 		Level:         LevelColumn,
 		PartsOfSpeech: PartsOfSpeechColumn,
 		Ipa:           IpaColumn,
-		Audio:         AudioColumn,
 		Definitions:   DefinitionsColumn,
 		NounForm:      NounFormColumn,
 		VerbForm:      VerbFormColumn,
