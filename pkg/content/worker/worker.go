@@ -94,7 +94,7 @@ func (w Worker) addCronjob() {
 		jobs = []cronjobData{
 			{
 				Task:       w.queue.GenerateTypename(queue.TypeNames.FetchNews),
-				CronSpec:   "@every 2h",
+				CronSpec:   "@every 3h",
 				Payload:    domain.QueueFetchNewsPayload{},
 				RetryTimes: 1,
 			},

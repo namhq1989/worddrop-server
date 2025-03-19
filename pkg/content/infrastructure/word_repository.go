@@ -77,15 +77,23 @@ func (r WordRepository) FindWithFilter(ctx *appcontext.AppContext, filter domain
 	return result, nil
 }
 
-func (r WordRepository) FindNewWord(ctx *appcontext.AppContext, categories []string, level string, ts time.Time) (*domain.Word, error) {
+func (r WordRepository) FindNewWord(ctx *appcontext.AppContext, categories []string, levels []string, ts time.Time) (*domain.Word, error) {
 	var (
 		w  = r.getTable().AS("words")
 		wn = table.WordNews.AS("wn")
 	)
 
 	whereStmt := wn.PublishedAt.GT_EQ(postgres.TimestampzT(ts))
-	if level != "" {
-		whereStmt = whereStmt.AND(w.Level.EQ(postgres.String(level)))
+	if len(levels) > 0 {
+		inElements := make([]string, len(levels))
+		for i, level := range levels {
+			escapedLevel := strings.ReplaceAll(level, "'", "''")
+			inElements[i] = fmt.Sprintf("'%s'", escapedLevel)
+		}
+
+		inClause := fmt.Sprintf("(%s)", strings.Join(inElements, ", "))
+		levelsCondition := postgres.BoolExp(postgres.Raw(fmt.Sprintf("words.level IN %s", inClause)))
+		whereStmt = whereStmt.AND(levelsCondition)
 	}
 	if len(categories) > 0 {
 		arrayElements := make([]string, len(categories))
@@ -104,7 +112,9 @@ func (r WordRepository) FindNewWord(ctx *appcontext.AppContext, categories []str
 		w.NounForm, w.VerbForm,
 	).
 		FROM(w.LEFT_JOIN(wn, wn.WordID.EQ(w.ID))).
-		WHERE(whereStmt)
+		WHERE(whereStmt).
+		ORDER_BY(postgres.Raw("RANDOM()")).
+		LIMIT(1)
 
 	var doc model.Words
 	if err := stmt.QueryContext(ctx.Context(), r.getDB(), &doc); err != nil {
