@@ -23,12 +23,13 @@ func NewGetNewWordHandler(wordRepository domain.WordRepository, service domain.S
 }
 
 func (h GetNewWordHandler) GetNewWord(ctx *appcontext.AppContext, req dto.GetNewWordRequest) (*dto.GetNewWordResponse, error) {
-	ctx.Logger().Info("new get new word request", appcontext.Fields{"categories": req.Categories, "level": req.Level})
+	ctx.Logger().Info("new get new word request", appcontext.Fields{"categories": req.Categories, "levels": req.Levels})
 	categories := strings.Split(req.Categories, ",")
+	levels := strings.Split(req.Levels, ",")
 
 	ctx.Logger().Text("find new word in database")
 	ts := manipulation.NowUTC().Add(domain.NewWordTimeThreshold * -1)
-	word, err := h.wordRepository.FindNewWord(ctx, categories, req.Level, ts)
+	word, err := h.wordRepository.FindNewWord(ctx, categories, levels, ts)
 	if err != nil {
 		ctx.Logger().Error("failed to find new word in database", err, appcontext.Fields{})
 		return nil, err
