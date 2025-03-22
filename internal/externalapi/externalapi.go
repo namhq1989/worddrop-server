@@ -14,20 +14,23 @@ type Operations interface {
 }
 
 type ExternalAPI struct {
-	rapidApiNews *resty.Client
+	rapidApiKeys       []string
+	rapidApiKeysLength int
+	rapidApiNews       *resty.Client
 }
 
 const (
 	rapidApiNewsEndpoint = "https://news67.p.rapidapi.com"
 )
 
-func NewExternalAPIClient(rapidAPIKey string) *ExternalAPI {
+func NewExternalAPIClient(rapidAPIKeys []string) *ExternalAPI {
 	return &ExternalAPI{
+		rapidApiKeys:       rapidAPIKeys,
+		rapidApiKeysLength: len(rapidAPIKeys),
 		rapidApiNews: resty.New().
 			SetBaseURL(rapidApiNewsEndpoint).
 			SetHeader("Accept", "application/json").
 			SetHeader("x-rapidapi-host", "news67.p.rapidapi.com").
-			SetHeader("x-rapidapi-key", rapidAPIKey).
 			SetTimeout(60 * time.Second).
 			SetJSONMarshaler(json.Marshal).
 			SetJSONUnmarshaler(json.Unmarshal).

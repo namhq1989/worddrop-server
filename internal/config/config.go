@@ -1,6 +1,9 @@
 package config
 
-import "errors"
+import (
+	"errors"
+	"strings"
+)
 
 type (
 	Server struct {
@@ -53,7 +56,7 @@ type (
 		SentryMachineName string
 
 		// RapidAPI
-		RapidApiKey string
+		RapidApiKeys []string
 
 		// Endpoint
 		NLPEndpoint string
@@ -101,12 +104,13 @@ func Init() Server {
 		SentryDSN:         getEnvStr("SENTRY_DSN"),
 		SentryMachineName: getEnvStr("SENTRY_MACHINE_NAME"),
 
-		RapidApiKey: getEnvStr("RAPID_API_KEY"),
-
 		NLPEndpoint: getEnvStr("NLP_ENDPOINT"),
 		CDNEndpoint: getEnvStr("CDN_ENDPOINT"),
 	}
 	cfg.IsEnvRelease = cfg.Environment == "release"
+
+	rapidApiKeysStr := getEnvStr("RAPID_API_KEYS")
+	cfg.RapidApiKeys = strings.Split(rapidApiKeysStr, ",")
 
 	// validation
 	if cfg.Environment == "" {
@@ -141,8 +145,8 @@ func Init() Server {
 		panic(errors.New("missing R2_ACCESS_KEY"))
 	}
 
-	if cfg.RapidApiKey == "" {
-		panic(errors.New("missing RAPID_API_KEY"))
+	if len(cfg.RapidApiKeys) == 0 {
+		panic(errors.New("missing RAPID_API_KEYS"))
 	}
 
 	if cfg.NLPEndpoint == "" {

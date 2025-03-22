@@ -5,6 +5,8 @@ import (
 	"net/url"
 	"time"
 
+	"github.com/namhq1989/worddrop-server/internal/utils/manipulation"
+
 	"github.com/namhq1989/go-utilities/appcontext"
 )
 
@@ -39,9 +41,13 @@ type newsApiResponseArticle struct {
 }
 
 func (ea ExternalAPI) FetchNews(ctx *appcontext.AppContext) (*FetchNewsResult, error) {
-	var apiResults newsApiResponse
+	var (
+		apiResults newsApiResponse
+		apiKey     = ea.getRandomAPIKey()
+	)
 
 	_, err := ea.rapidApiNews.R().
+		SetHeader("x-rapidapi-key", apiKey).
 		SetQueryParams(map[string]string{
 			"languages": "en",
 		}).
@@ -98,6 +104,15 @@ func (ea ExternalAPI) parseNewsData(data newsApiResponse) ([]NewsArticle, error)
 	}
 
 	return news, nil
+}
+
+func (ea ExternalAPI) getRandomAPIKey() string {
+	if ea.rapidApiKeysLength == 1 {
+		return ea.rapidApiKeys[0]
+	}
+
+	idx := manipulation.RandomIntInRange(0, ea.rapidApiKeysLength-1)
+	return ea.rapidApiKeys[idx]
 }
 
 func cleanURL(rawURL string) string {
