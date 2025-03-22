@@ -82,7 +82,7 @@ func main() {
 	a.nlp = nlp.NewNLPClient(cfg.NLPEndpoint)
 
 	// external api
-	a.externalAPI = externalapi.NewExternalAPIClient(cfg.RapidApiKey)
+	a.externalAPI = externalapi.NewExternalAPIClient(cfg.RapidApiKeys)
 
 	// monitoring
 	a.monitoring = monitoring.NewMonitoringClient(
