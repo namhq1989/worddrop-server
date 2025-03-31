@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	NewWordTimeThreshold = 24 * 3 * time.Hour
+	NewWordTimeThreshold = 24 * 2 * time.Hour
 )
 
 type WordRepository interface {
