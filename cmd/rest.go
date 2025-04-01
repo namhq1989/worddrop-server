@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/labstack/echo/v4"
@@ -124,7 +125,18 @@ func addCorsMiddleware(e *echo.Echo, cfg config.Server) {
 	}
 
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins:     allowedOrigins,
+		AllowOriginFunc: func(origin string) (bool, error) {
+			for _, allowedOrigin := range allowedOrigins {
+				if allowedOrigin == origin {
+					return true, nil
+				}
+			}
+			if strings.HasPrefix(origin, "chrome-extension://") {
+				return true, nil
+			}
+			return false, nil
+		},
+		// AllowOrigins:     allowedOrigins,
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"},
 		AllowHeaders:     []string{"Accept", "Authorization", "Content-Type"},
 		AllowCredentials: true,
