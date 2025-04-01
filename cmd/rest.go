@@ -115,6 +115,7 @@ func addCorsMiddleware(e *echo.Echo, cfg config.Server) {
 	if cfg.IsEnvRelease {
 		allowedOrigins = []string{
 			"chrome-extension://gbhnhocbiigagomaelljdblppfgbgbkj",
+			"chrome-extension://*",
 		}
 	} else {
 		allowedOrigins = []string{
