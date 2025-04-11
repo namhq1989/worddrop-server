@@ -10,6 +10,7 @@ import (
 type (
 	Queries interface {
 		GetNewWord(ctx *appcontext.AppContext, req dto.GetNewWordRequest) (*dto.GetNewWordResponse, error)
+		GetInitialWords(ctx *appcontext.AppContext, _ dto.GetInitialWordsRequest) (*dto.GetInitialWordsResponse, error)
 	}
 	Instance interface {
 		Queries
@@ -17,6 +18,7 @@ type (
 
 	queryHandlers struct {
 		query.GetNewWordHandler
+		query.GetInitialWordsHandler
 	}
 	Application struct {
 		queryHandlers
@@ -31,7 +33,8 @@ func New(
 ) *Application {
 	return &Application{
 		queryHandlers: queryHandlers{
-			GetNewWordHandler: query.NewGetNewWordHandler(wordRepository, service),
+			GetNewWordHandler:      query.NewGetNewWordHandler(wordRepository, service),
+			GetInitialWordsHandler: query.NewGetInitialWordsHandler(wordRepository, service),
 		},
 	}
 }
