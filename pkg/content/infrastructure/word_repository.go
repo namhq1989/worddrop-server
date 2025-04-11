@@ -45,7 +45,7 @@ func (r WordRepository) FindWithFilter(ctx *appcontext.AppContext, filter domain
 	whereStmt := w.LastFetchedAt.LT(postgres.TimestampzT(filter.Timestamp))
 	stmt := postgres.SELECT(
 		w.ID, w.Word, w.Level, w.Definitions, w.PartsOfSpeech, w.Ipa,
-		w.NounForm, w.VerbForm,
+		w.NounForm, w.VerbForm, w.LastFetchedAt,
 	).
 		FROM(w).
 		WHERE(whereStmt).

@@ -1,18 +1,22 @@
 package dto
 
-import "github.com/namhq1989/worddrop-server/pkg/content/domain"
+import (
+	"github.com/namhq1989/worddrop-server/internal/utils/httprespond"
+	"github.com/namhq1989/worddrop-server/pkg/content/domain"
+)
 
 type Word struct {
-	ID            string           `json:"id"`
-	Word          string           `json:"word"`
-	Level         string           `json:"level"`
-	Definitions   []WordDefinition `json:"definitions"`
-	PartsOfSpeech []string         `json:"partsOfSpeech"`
-	Ipa           string           `json:"ipa"`
-	NounForm      *WordNounForm    `json:"nounForm"`
-	VerbForm      *WordVerbForm    `json:"verbForm"`
-	Examples      []WordExample    `json:"examples"`
-	News          []WordNews       `json:"news"`
+	ID            string                    `json:"id"`
+	Word          string                    `json:"word"`
+	Level         string                    `json:"level"`
+	Definitions   []WordDefinition          `json:"definitions"`
+	PartsOfSpeech []string                  `json:"partsOfSpeech"`
+	Ipa           string                    `json:"ipa"`
+	NounForm      *WordNounForm             `json:"nounForm"`
+	VerbForm      *WordVerbForm             `json:"verbForm"`
+	Examples      []WordExample             `json:"examples"`
+	News          []WordNews                `json:"news"`
+	LastFetchedAt *httprespond.TimeResponse `json:"date"`
 }
 
 func (Word) FromDomain(word domain.Word, examples []domain.WordExample, news []domain.WordNews) Word {
@@ -27,6 +31,7 @@ func (Word) FromDomain(word domain.Word, examples []domain.WordExample, news []d
 		VerbForm:      nil,
 		Examples:      make([]WordExample, 0),
 		News:          make([]WordNews, 0),
+		LastFetchedAt: httprespond.NewTimeResponse(word.LastFetchedAt),
 	}
 
 	for _, definition := range word.Definitions {
