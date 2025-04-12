@@ -16,14 +16,9 @@ func NewExternalAPIRepository(ea externalapi.Operations) ExternalAPIRepository {
 	}
 }
 
-func (r ExternalAPIRepository) FetchNews(ctx *appcontext.AppContext) ([]domain.NewsArticleScraped, error) {
-	apiResult, err := r.ea.FetchNews(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	var result = make([]domain.NewsArticleScraped, 0)
-	for _, article := range apiResult.Articles {
+func (r ExternalAPIRepository) mapArticlesToDomain(articles []externalapi.NewsArticle) []domain.NewsArticleScraped {
+	var result = make([]domain.NewsArticleScraped, 0, len(articles))
+	for _, article := range articles {
 		result = append(result, domain.NewsArticleScraped{
 			Title:       article.Title,
 			Url:         article.Url,
@@ -34,5 +29,23 @@ func (r ExternalAPIRepository) FetchNews(ctx *appcontext.AppContext) ([]domain.N
 		})
 	}
 
-	return result, nil
+	return result
+}
+
+func (r ExternalAPIRepository) FetchNewsWithNewsService(ctx *appcontext.AppContext) ([]domain.NewsArticleScraped, error) {
+	apiResult, err := r.ea.FetchNewsWithNewsService(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.mapArticlesToDomain(apiResult.Articles), nil
+}
+
+func (r ExternalAPIRepository) FetchNewsWithGoogleService(ctx *appcontext.AppContext) ([]domain.NewsArticleScraped, error) {
+	apiResult, err := r.ea.FetchNewsWithGoogleService(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.mapArticlesToDomain(apiResult.Articles), nil
 }

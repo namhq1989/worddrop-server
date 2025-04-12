@@ -36,23 +36,43 @@ func NewFetchNewsHandler(
 	}
 }
 
-func (h FetchNewsHandler) FetchNews(ctx *appcontext.AppContext, _ domain.QueueFetchNewsPayload) error {
+func (h FetchNewsHandler) FetchNews(ctx *appcontext.AppContext, payload domain.QueueFetchNewsPayload) error {
 	tracer := otel.Tracer("[tracer] fetch news")
 	spanCtx, span := tracer.Start(ctx.Context(), "[worker] fetch news")
 	ctx.SetContext(spanCtx)
 	defer span.End()
+
 	ctx.Logger().Text("fetch news from external api")
-	news, err := h.externalAPIRepository.FetchNews(ctx)
-	if err != nil {
-		ctx.Logger().Error("failed to fetch news from external api", err, appcontext.Fields{})
-		return err
+	var (
+		news       = make([]domain.NewsArticleScraped, 0)
+		err  error = nil
+	)
+
+	if payload.Service == domain.NewsService {
+		ctx.Logger().Text("fetch news with News Service from external api")
+		news, err = h.externalAPIRepository.FetchNewsWithNewsService(ctx)
+		if err != nil {
+			ctx.Logger().Error("failed to fetch news with News Service from external api", err, appcontext.Fields{})
+			return err
+		}
+	} else {
+		ctx.Logger().Text("fetch news with Google News Service from external api")
+		news, err = h.externalAPIRepository.FetchNewsWithGoogleService(ctx)
+		if err != nil {
+			ctx.Logger().Error("failed to fetch news with Google News Service from external api", err, appcontext.Fields{})
+			return err
+		}
 	}
+
+	ctx.Logger().Print("news", news)
 
 	ctx.Logger().Text("collect news urls")
 	urls := make([]string, 0)
 	for _, n := range news {
 		urls = append(urls, n.Url)
 	}
+
+	ctx.Logger().Print("urls", urls)
 
 	ctx.Logger().Text("get news by urls")
 	existedNews, err := h.wordNewsRepository.FindBySourceURLs(ctx, urls)
@@ -75,6 +95,8 @@ func (h FetchNewsHandler) FetchNews(ctx *appcontext.AppContext, _ domain.QueueFe
 			newNews = append(newNews, n)
 		}
 	}
+
+	ctx.Logger().Print("new news", newNews)
 
 	ctx.Logger().Info("processing new news", appcontext.Fields{"count": len(newNews)})
 	for _, article := range newNews {
