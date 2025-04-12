@@ -6,8 +6,14 @@ import (
 	"github.com/namhq1989/go-utilities/appcontext"
 )
 
+const (
+	NewsService       = "news"
+	GoogleNewsService = "google_news"
+)
+
 type ExternalAPIRepository interface {
-	FetchNews(ctx *appcontext.AppContext) ([]NewsArticleScraped, error)
+	FetchNewsWithNewsService(ctx *appcontext.AppContext) ([]NewsArticleScraped, error)
+	FetchNewsWithGoogleService(ctx *appcontext.AppContext) ([]NewsArticleScraped, error)
 }
 
 type NewsArticleScraped struct {

@@ -6,7 +6,9 @@ type QueueRepository interface {
 	GenerateTextAudio(ctx *appcontext.AppContext, payload QueueGenerateTextAudioPayload) error
 }
 
-type QueueFetchNewsPayload struct{}
+type QueueFetchNewsPayload struct {
+	Service string
+}
 
 type QueueGenerateTextAudioPayload struct {
 	ID      string
