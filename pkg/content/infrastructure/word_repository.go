@@ -108,7 +108,7 @@ func (r WordRepository) FindNewWord(ctx *appcontext.AppContext, categories []str
 
 	stmt := postgres.SELECT(
 		w.ID, w.Word, w.Level, w.Definitions, w.PartsOfSpeech, w.Ipa,
-		w.NounForm, w.VerbForm,
+		w.NounForm, w.VerbForm, w.LastFetchedAt,
 	).
 		FROM(w.LEFT_JOIN(wn, wn.WordID.EQ(w.ID))).
 		WHERE(whereStmt).
@@ -134,7 +134,7 @@ func (r WordRepository) FindByWord(ctx *appcontext.AppContext, word string) (*do
 	var w = r.getTable()
 	stmt := postgres.SELECT(
 		w.ID, w.Word, w.Level, w.Definitions, w.PartsOfSpeech, w.Ipa,
-		w.NounForm, w.VerbForm, w.LastFetchedAt,
+		w.NounForm, w.VerbForm, w.LastFetchedAt, w.LastFetchedAt,
 	).
 		FROM(w).
 		WHERE(w.Word.EQ(postgres.String(word)))
@@ -162,7 +162,7 @@ func (r WordRepository) FindByID(ctx *appcontext.AppContext, wordID string) (*do
 	var w = r.getTable()
 	stmt := postgres.SELECT(
 		w.ID, w.Word, w.Level, w.Definitions, w.PartsOfSpeech, w.Ipa,
-		w.NounForm, w.VerbForm,
+		w.NounForm, w.VerbForm, w.LastFetchedAt,
 	).
 		FROM(w).
 		WHERE(w.ID.EQ(postgres.String(wordID)))
@@ -196,7 +196,7 @@ func (r WordRepository) FindSimilar(ctx *appcontext.AppContext, pos, level strin
 
 	stmt := postgres.SELECT(
 		w.ID, w.Word, w.Level, w.Definitions, w.PartsOfSpeech, w.Ipa,
-		w.NounForm, w.VerbForm,
+		w.NounForm, w.VerbForm, w.LastFetchedAt,
 	).
 		FROM(w).
 		WHERE(whereStmt).
